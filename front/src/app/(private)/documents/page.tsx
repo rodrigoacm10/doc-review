@@ -3,6 +3,7 @@
 import { useQuery } from '@tanstack/react-query'
 import { getDocuments } from '@/services/documents'
 import { downloadDoc } from '@/utils/downloadDoc'
+import { ChatArea } from '@/components/ChatArea'
 
 export default function DocumentsPage() {
   const { data, isLoading, error } = useQuery({
@@ -46,6 +47,7 @@ export default function DocumentsPage() {
 
               <h2 className="font-semibold">{doc.extractedText}</h2>
               <p className="text-gray-600">{doc.llmResponse}</p>
+              <ChatArea documentId={doc.id} />
             </li>
           ))}
         </ul>
@@ -53,4 +55,3 @@ export default function DocumentsPage() {
     </div>
   )
 }
-

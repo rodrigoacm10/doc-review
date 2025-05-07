@@ -17,7 +17,7 @@ export async function getDocuments() {
     headers: {
       Authorization: `Bearer ${token?.value}`,
     },
-    withCredentials: true, // se estiver usando cookies/sessão
+    withCredentials: true,
   })
 
   return response.data
@@ -63,9 +63,49 @@ export async function postDocuments(data: any) {
   console.log('enviado ->', data)
   const response = await api.post('/documents/upload', data, {
     headers: {
-      Authorization: `Bearer ${token?.value}`, // JWT salvo localmente
+      Authorization: `Bearer ${token?.value}`,
     },
-    withCredentials: true, // se estiver usando cookies/sessão
+    withCredentials: true,
+  })
+
+  console.log('REsponse ->', response)
+
+  return response.data
+}
+
+export async function getDocumentsConversation(documentId: string) {
+  const token = (await cookies()).get('token')
+
+  if (!token?.value) {
+    throw new Error('Token não encontrado')
+  }
+
+  const response = await api.get(`/documents/${documentId}/conversations`, {
+    headers: {
+      Authorization: `Bearer ${token?.value}`,
+    },
+    withCredentials: true,
+  })
+
+  return response.data
+}
+
+export async function postDocumentsConversation(
+  documentId: string,
+  data: { question: string },
+) {
+  const token = (await cookies()).get('token')
+
+  if (!token?.value) {
+    throw new Error('Token não encontrado')
+  }
+
+  console.log('enviado ->', data)
+  const response = await api.post(`/documents/${documentId}/ask`, data, {
+    headers: {
+      Authorization: `Bearer ${token?.value}`,
+    },
+    withCredentials: true,
   })
 
   console.log('REsponse ->', response)
