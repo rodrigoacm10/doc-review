@@ -1,0 +1,97 @@
+# dependencies
+front/node_modules
+front/.pnp
+front/.pnp.*
+front/.yarn/*
+!front/.yarn/patches
+!front/.yarn/plugins
+!front/.yarn/releases
+!front/.yarn/versions
+
+# testing
+front/coverage
+
+# next.js
+front/.next/
+front/out/
+
+# production
+front/build
+
+# misc
+front/.DS_Store
+front/*.pem
+
+# debug
+front/npm-debug.log*
+front/yarn-debug.log*
+front/yarn-error.log*
+front/.pnpm-debug.log*
+
+# env files (can opt-in for committing if needed)
+front/.env*
+
+# vercel
+front/.vercel
+
+# typescript
+front/*.tsbuildinfo
+front/next-env.d.ts
+
+
+# compiled output
+back/dist
+back/node_modules
+back/build
+
+# Logs
+back/logs
+back/*.log
+back/npm-debug.log*
+back/pnpm-debug.log*
+back/yarn-debug.log*
+back/yarn-error.log*
+back/lerna-debug.log*
+
+# OS
+back/.DS_Store
+
+# Tests
+back/coverage
+back/.nyc_output
+
+# IDEs and editors
+back/.idea
+back/.project
+back/.classpath
+back/.c9/
+back/*.launch
+back/.settings/
+back/*.sublime-workspace
+
+# IDE - VSCode
+back/.vscode/*
+!back/.vscode/settings.json
+!back/.vscode/tasks.json
+!back/.vscode/launch.json
+!back/.vscode/extensions.json
+
+# dotenv environment variable files
+back/.env
+back/.env.development.local
+back/.env.test.local
+back/.env.production.local
+back/.env.local
+
+# temp directory
+back/.temp
+back/.tmp
+
+# Runtime data
+back/pids
+back/*.pid
+back/*.seed
+back/*.pid.lock
+
+# Diagnostic reports
+back/report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
