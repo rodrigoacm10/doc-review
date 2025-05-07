@@ -28,12 +28,14 @@ model User {
 }
 
 model Document {
-  id            String   @id @default(uuid())
-  userId        String
-  imagePath     String
-  extractedText String
-  llmResponse   String
-  createdAt     DateTime @default(now())
+  id                String   @id @default(uuid())
+  userId            String
+  imagePath         String
+  imageUrl          String   @default("")
+  originalFilename  String   @default("")
+  extractedText     String
+  llmResponse       String
+  createdAt         DateTime @default(now())
   
   user User @relation(fields: [userId], references: [id])
 }

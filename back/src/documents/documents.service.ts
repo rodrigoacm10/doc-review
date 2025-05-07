@@ -11,7 +11,17 @@ export class DocumentsService {
     private llmService: LlmService,
   ) {}
 
-  async processDocument(imagePath: string, userId: string) {
+  async processDocument({
+    userId,
+    imagePath,
+    imageUrl,
+    originalFilename,
+  }: {
+    userId: string;
+    imagePath: string;
+    imageUrl: string;
+    originalFilename: string;
+  }) {
     const extractedText = await this.ocrService.extractText(imagePath);
     const llmResponse = await this.llmService.explainText(extractedText);
 
@@ -19,9 +29,10 @@ export class DocumentsService {
       data: {
         userId,
         imagePath,
+        imageUrl,
+        originalFilename,
         extractedText,
         llmResponse,
-        // llmResponse: 'alguma resposta',
       },
     });
   }
@@ -30,6 +41,15 @@ export class DocumentsService {
     return this.prisma.document.findMany({
       where: { userId },
       orderBy: { createdAt: 'desc' },
+    });
+  }
+
+  async getDocumentByIdAndUser(documentId: string, userId: string) {
+    return this.prisma.document.findFirst({
+      where: {
+        id: documentId,
+        userId,
+      },
     });
   }
 }
