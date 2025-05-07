@@ -19,12 +19,12 @@ datasource db {
 }
 
 model User {
-  id        String     @id @default(uuid())
-  name      String
-  email     String     @unique
-  password  String
+  id              String     @id @default(uuid())
+  name            String
+  email           String     @unique
+  password        String
 
-  documents Document[]  
+  documents       Document[]  
 }
 
 model Document {
@@ -37,5 +37,16 @@ model Document {
   llmResponse       String
   createdAt         DateTime @default(now())
   
-  user User @relation(fields: [userId], references: [id])
+  conversations     Conversation[]  
+  user              User @relation(fields: [userId], references: [id])
+}
+
+model Conversation {
+  id          String   @id @default(uuid())
+  documentId  String
+  question    String
+  answer      String
+  createdAt   DateTime @default(now())
+
+  document    Document @relation(fields: [documentId], references: [id])
 }

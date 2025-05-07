@@ -52,4 +52,25 @@ export class DocumentsService {
       },
     });
   }
+
+  async getDocumentsConversations(documentId: string) {
+    return this.prisma.conversation.findMany({
+      where: { documentId: documentId },
+      orderBy: { createdAt: 'asc' },
+    });
+  }
+
+  async askAndSave(documentId: string, documentText: string, question: string) {
+    const answer = await this.llmService.askQuestion(documentText, question);
+
+    await this.prisma.conversation.create({
+      data: {
+        documentId,
+        question,
+        answer,
+      },
+    });
+
+    return answer;
+  }
 }
