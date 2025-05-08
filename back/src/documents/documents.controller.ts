@@ -73,48 +73,6 @@ export class DocumentsController {
     return res.download(filePath, document.originalFilename);
   }
 
-  @Get(':id/conversations')
-  @UseGuards(JwtAuthGuard)
-  async getHistory(@Param('id') id: string, @Req() req) {
-    const { userId } = req.user;
-
-    const document = await this.documentsService.getDocumentByIdAndUser(
-      id,
-      userId,
-    );
-    if (!document) throw new NotFoundException('Documento não encontrado');
-
-    const conversations =
-      await this.documentsService.getDocumentsConversations(id);
-
-    return { conversations };
-  }
-
-  @UseGuards(JwtAuthGuard)
-  @Post(':id/ask')
-  async askQuestion(
-    @Param('id') documentId: string,
-    @Body() body: { question: string },
-    @Req() req,
-  ) {
-    const { userId } = req.user;
-    const { question } = body;
-
-    const document = await this.documentsService.getDocumentByIdAndUser(
-      documentId,
-      userId,
-    );
-    if (!document) throw new NotFoundException('Documento não encontrado');
-
-    const answer = await this.documentsService.askAndSave(
-      documentId,
-      document.extractedText,
-      question,
-    );
-
-    return { question, answer };
-  }
-
   @UseGuards(JwtAuthGuard)
   @Get('download/:id/full')
   async downloadWithContent(

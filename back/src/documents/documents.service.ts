@@ -58,27 +58,6 @@ export class DocumentsService {
     });
   }
 
-  async getDocumentsConversations(documentId: string) {
-    return this.prisma.conversation.findMany({
-      where: { documentId: documentId },
-      orderBy: { createdAt: 'asc' },
-    });
-  }
-
-  async askAndSave(documentId: string, documentText: string, question: string) {
-    const answer = await this.llmService.askQuestion(documentText, question);
-
-    await this.prisma.conversation.create({
-      data: {
-        documentId,
-        question,
-        answer,
-      },
-    });
-
-    return answer;
-  }
-
   async generateDocumentWithContent(
     documentId: string,
     userId: string,
@@ -87,7 +66,10 @@ export class DocumentsService {
     const document = await this.getDocumentByIdAndUser(documentId, userId);
     if (!document) throw new NotFoundException('Documento não encontrado');
 
-    const conversations = await this.getDocumentsConversations(documentId);
+    const conversations = await this.prisma.conversation.findMany({
+      where: { documentId: documentId },
+      orderBy: { createdAt: 'asc' },
+    });
 
     const doc = new PDFDocument({ autoFirstPage: false });
     res.setHeader('Content-Type', 'application/pdf');
