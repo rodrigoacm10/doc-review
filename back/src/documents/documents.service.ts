@@ -58,6 +58,23 @@ export class DocumentsService {
     });
   }
 
+  async deleteDocument(documentId: string, userId: string): Promise<boolean> {
+    const document = await this.prisma.document.findFirst({
+      where: {
+        id: documentId,
+        userId,
+      },
+    });
+
+    if (!document) return false;
+
+    await this.prisma.document.delete({
+      where: { id: documentId },
+    });
+
+    return true;
+  }
+
   async generateDocumentWithContent(
     documentId: string,
     userId: string,

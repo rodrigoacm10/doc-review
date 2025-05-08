@@ -10,6 +10,7 @@ import {
   Param,
   NotFoundException,
   Body,
+  Delete,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
@@ -82,5 +83,18 @@ export class DocumentsController {
   ) {
     const { userId } = req.user;
     return this.documentsService.generateDocumentWithContent(id, userId, res);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Delete(':id')
+  async deleteDocument(@Param('id') id: string, @Req() req) {
+    const { userId } = req.user;
+
+    const deleted = await this.documentsService.deleteDocument(id, userId);
+    if (!deleted) {
+      throw new NotFoundException('Documento não encontrado ou sem permissão');
+    }
+
+    return { message: 'Documento deletado com sucesso' };
   }
 }

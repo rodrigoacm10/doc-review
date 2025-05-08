@@ -23,6 +23,23 @@ export async function getDocuments() {
   return response.data
 }
 
+export async function deleteDocuments(id: string) {
+  const token = (await cookies()).get('token')
+
+  if (!token?.value) {
+    throw new Error('Token não encontrado')
+  }
+
+  const response = await api.delete(`/documents/${id}`, {
+    headers: {
+      Authorization: `Bearer ${token?.value}`,
+    },
+    withCredentials: true,
+  })
+
+  return response.data
+}
+
 export const getDownloadIdDocuments = async (id: string) => {
   const token = (await cookies()).get('token')?.value
 
