@@ -3,10 +3,20 @@ import { downloadDoc } from '@/utils/downloadDoc'
 import { downloadPdf } from '@/utils/downloadPdf'
 import { useQuery, useQueryClient } from '@tanstack/react-query'
 import { ChatArea } from './ChatArea'
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from './ui/accordion'
+import { Button } from './ui/button'
+import { ImageDialog } from './ImageDialog'
+import { DeleteDialog } from './DeleteDialog'
+import { useRef, useState, useEffect } from 'react'
+import { ExpandableText } from './ExpandableText'
 
 export const FilesList = () => {
   const queryClient = useQueryClient()
-
   const { data, isLoading, error } = useQuery({
     queryKey: ['documents'],
     queryFn: getDocuments,
@@ -29,66 +39,60 @@ export const FilesList = () => {
         </p>
       </div>
 
-      {data.length === 0 ? (
-        <p>Nenhum documento encontrado.</p>
+      {!data ? (
+        <p className="text-center opacity-60">Nenhum documento encontrado</p>
       ) : (
-        <ul className="space-y-2">
-          {data.map((doc: any) => (
-            <li key={doc.id} className="p-4 bg-white rounded shadow">
-              <h1 className="font-poligon font-bold text-black text-4xl">
-                {doc.originalFilename}
-              </h1>
-              <img src={`http://localhost:3000${doc.imageUrl}`} />
+        <Accordion type="single" collapsible className="w-full">
+          {data.map((file) => (
+            <AccordionItem key={file.id} value={file.id}>
+              <AccordionTrigger className="flex items-center">
+                <div className="flex items-center gap-2">
+                  <DeleteDialog
+                    fileName={file.originalFilename}
+                    documentId={file.id}
+                  />
+                  <ImageDialog
+                    fileName={file.originalFilename}
+                    imageUrl={file.imageUrl}
+                  />
+                  <div className="flex justify-center items-center h-[60px] w-[60px]">
+                    <img
+                      src={`${process.env.NEXT_PUBLIC_API_URL}${file.imageUrl}`}
+                      alt="Preview do documento"
+                      className="h-full w-full object-contain rounded-lg shadow bg-[#f3f4f1]/70"
+                    />
+                  </div>
+                </div>
+                <p>{file.originalFilename}</p>
+              </AccordionTrigger>
+              <AccordionContent>
+                <div className="py-3">
+                  <div className="mb-5">
+                    <h3 className="!font-poppins font-semibold text-xl">
+                      Texto extraído da imagem
+                    </h3>
+                    <p className="opacity-60 text-sm">
+                      Informações que conseguimos retirar da imagem
+                    </p>
+                  </div>
+                  <ExpandableText text={file.extractedText} />
 
-              <div className="flex gap-10">
-                <button
-                  onClick={async () => {
-                    try {
-                      await downloadDoc(doc.id)
-                    } catch (err) {
-                      console.error('Erro no download:', err)
-                    }
-                  }}
-                >
-                  baixar
-                </button>
+                  <div className="mb-5 mt-8">
+                    <h3 className="!font-poppins font-semibold text-xl">
+                      Informações interpretadas pela IA
+                    </h3>
+                    <p className="opacity-60 text-sm">
+                      Informações que conseguimos retirar do texto Extraído
+                    </p>
+                  </div>
+                  <ExpandableText text={file.llmResponse} />
 
-                <button
-                  onClick={async () => {
-                    try {
-                      await downloadPdf(doc.id)
-                    } catch (err) {
-                      console.error('Erro no download:', err)
-                    }
-                  }}
-                >
-                  baixar com conteúdo
-                </button>
-
-                <button
-                  onClick={async () => {
-                    try {
-                      await deleteDocuments(doc.id)
-                      await queryClient.invalidateQueries({
-                        queryKey: ['documents'],
-                      })
-                    } catch (err) {
-                      console.error('Erro ao deletar:', err)
-                    }
-                  }}
-                >
-                  deletar
-                </button>
-              </div>
-
-              <h2 className="font-poligon font-semibold">
-                {doc.extractedText}
-              </h2>
-              <p className="font-poligon text-gray-600">{doc.llmResponse}</p>
-              <ChatArea documentId={doc.id} />
-            </li>
+                  <div></div>
+                </div>
+              </AccordionContent>
+            </AccordionItem>
           ))}
-        </ul>
+        </Accordion>
       )}
     </div>
   )
