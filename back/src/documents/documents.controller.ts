@@ -114,4 +114,15 @@ export class DocumentsController {
 
     return { question, answer };
   }
+
+  @UseGuards(JwtAuthGuard)
+  @Get('download/:id/full')
+  async downloadWithContent(
+    @Param('id') id: string,
+    @Res() res: Response,
+    @Req() req,
+  ) {
+    const { userId } = req.user;
+    return this.documentsService.generateDocumentWithContent(id, userId, res);
+  }
 }

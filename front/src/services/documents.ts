@@ -53,6 +53,38 @@ export const getDownloadIdDocuments = async (id: string) => {
   })
 }
 
+export const getDownloadIdDocumentsPdf = async (id: string) => {
+  const token = (await cookies()).get('token')?.value
+
+  if (!token) {
+    return new NextResponse('Token não encontrado', { status: 401 })
+  }
+
+  const response = await api.get(`/documents/download/${id}/full`, {
+    responseType: 'arraybuffer',
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  })
+
+  console.log('response ->', response)
+
+  const buffer = Buffer.from(response.data)
+  const fileType = await fileTypeFromBuffer(buffer)
+
+  const mime = fileType?.mime || 'application/octet-stream'
+  const ext = fileType?.ext || 'bin'
+  const filename = `documento.${ext}`
+
+  return new NextResponse(buffer, {
+    status: 200,
+    headers: {
+      'Content-Type': mime,
+      'Content-Disposition': `attachment; filename=${filename}`,
+    },
+  })
+}
+
 export async function postDocuments(data: any) {
   const token = (await cookies()).get('token')
 
