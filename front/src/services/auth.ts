@@ -9,14 +9,22 @@ import { redirect } from 'next/navigation'
 type UserType = { email: string; id: string; name: string; password: string }
 
 export async function loginRequest(data: LoginSchemaType) {
-  const response = await api.post('/auth/login', data, {
-    withCredentials: true,
-  })
+  try {
+    const response = await api.post('/auth/login', data, {
+      withCredentials: true,
+    })
 
-  if (response.data.access_token)
-    (await cookies()).set('token', response.data.access_token)
+    if (response.data.access_token) {
+      ;(await cookies()).set('token', response.data.access_token)
+    }
 
-  return response.data
+    return response.data
+  } catch (err) {
+    console.error(err)
+    return {
+      error: 'Email ou senha incorretos',
+    }
+  }
 }
 
 export async function logout() {
@@ -26,10 +34,15 @@ export async function logout() {
 
 export async function registerRequest(
   data: RegisterShemaType,
-): Promise<UserType> {
-  const response = await api.post('/auth/register', data, {
-    withCredentials: true,
-  })
+): Promise<UserType | { error: string }> {
+  try {
+    const response = await api.post('/auth/register', data, {
+      withCredentials: true,
+    })
 
-  return response.data
+    return response.data
+  } catch (err) {
+    console.error(err)
+    return { error: 'Email já em uso' }
+  }
 }

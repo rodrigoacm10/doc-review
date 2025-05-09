@@ -24,8 +24,6 @@ export function ChatArea({ documentId }: { documentId: string }) {
     queryFn: () => getDocumentsConversation(documentId),
   })
 
-  console.log('concversation', conversations)
-
   const { mutate: sendMessage, isPending } = useMutation({
     mutationFn: (data: MessageSchemaType) =>
       postDocumentsConversation(documentId, data),

@@ -1,7 +1,7 @@
 import { Controller, Post, Body, UseGuards, Request } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
-import { Request as ExpressRequest } from 'express';
+import { AuthenticatedRequest } from 'src/@types/auth';
 
 @Controller('auth')
 export class AuthController {
@@ -24,7 +24,7 @@ export class AuthController {
   @Post('me')
   profile(
     @Request()
-    req: ExpressRequest & { user: { userId: string; email: string } },
+    req: AuthenticatedRequest,
   ) {
     return req.user;
   }

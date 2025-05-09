@@ -18,14 +18,8 @@ import { DocumentsService } from './documents.service';
 import { v4 as uuid } from 'uuid';
 import { extname, join } from 'path';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
-import { Express, Response, Request as ExpressRequest } from 'express';
-
-interface AuthenticatedRequest extends ExpressRequest {
-  user: {
-    userId: string;
-    email: string;
-  };
-}
+import { Express, Response } from 'express';
+import { AuthenticatedRequest } from 'src/@types/auth';
 
 @Controller('documents')
 export class DocumentsController {

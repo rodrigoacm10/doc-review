@@ -10,14 +10,7 @@ import {
 } from '@nestjs/common';
 import { ConversationsService } from './conversations.service';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
-import { Request as ExpressRequest } from 'express';
-
-interface AuthenticatedRequest extends ExpressRequest {
-  user: {
-    userId: string;
-    email: string;
-  };
-}
+import { AuthenticatedRequest } from 'src/@types/auth';
 
 @Controller('conversations')
 export class ConversationsController {
