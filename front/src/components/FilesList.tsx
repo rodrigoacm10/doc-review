@@ -4,7 +4,7 @@ import { getDocuments } from '@/services/documents'
 import { useQuery } from '@tanstack/react-query'
 import { useState } from 'react'
 import { Accordion } from './ui/accordion'
-import { Search } from 'lucide-react'
+import { Search, Loader2 } from 'lucide-react'
 import { FileAccordionItem } from './FileAccordionItem'
 
 export const FilesList = () => {
@@ -18,12 +18,6 @@ export const FilesList = () => {
   const filteredData = data?.filter((file) =>
     file.originalFilename.toLowerCase().includes(searchTerm.toLowerCase()),
   )
-
-  if (isLoading) return <p className="text-center">Carregando documentos...</p>
-  if (error)
-    return (
-      <p className="text-center text-red-500">Erro ao carregar documentos</p>
-    )
 
   return (
     <div className="w-full font-poligon">
@@ -47,7 +41,16 @@ export const FilesList = () => {
         />
       </div>
 
-      {!filteredData || filteredData.length === 0 ? (
+      {isLoading ? (
+        <div className="flex justify-center items-center gap-2 text-gray-500">
+          <Loader2 className="animate-spin" size={20} />
+          <p className="text-sm">Carregando documentos...</p>
+        </div>
+      ) : error ? (
+        <p className="text-center text-red-500 font-semibold">
+          Erro ao carregar documentos
+        </p>
+      ) : !filteredData || filteredData.length === 0 ? (
         <p className="text-center opacity-60">Nenhum documento encontrado</p>
       ) : (
         <div className="h-[850px] overflow-y-scroll">
