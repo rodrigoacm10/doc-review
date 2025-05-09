@@ -18,7 +18,7 @@ export default function DocumentsPage() {
           <DraggerUpload onUploadSuccess={handleUploadSuccess} />
         </div>
       </div>
-      <div className="max-w-3xl mx-auto mt-10 px-8">
+      <div className="max-w-3xl mx-auto mt-10 px-8 py-10">
         <FilesList />
       </div>
     </div>

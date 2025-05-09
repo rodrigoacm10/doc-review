@@ -5,6 +5,7 @@ import { Header } from '@/components/Header'
 import { Toaster } from 'sonner'
 import { cookies } from 'next/headers'
 import { redirect } from 'next/navigation'
+import { Footer } from '@/components/Footer'
 
 export const metadata: Metadata = {
   title: 'Create Next App',
@@ -30,6 +31,7 @@ export default async function RootLayout({
           {children}
           <Toaster position="top-right" richColors />
         </QueryProvider>
+        <Footer />
       </body>
     </html>
   )
