@@ -4,6 +4,13 @@
 
 🔗 Acesse a versão em produção: [https://doc-review-theta.vercel.app](https://doc-review-theta.vercel.app)
 
+conta de testes:
+
+```bash
+teste123@gmail.com
+teste123
+```
+
 ---
 
 ## 🚀 Funcionalidades
@@ -39,7 +46,7 @@ Crie um arquivo `.env` na raiz da pasta `/back` com o seguinte conteúdo:
 ```env
 DATABASE_URL="postgresql://docreview_owner:npg_BqcSPoft0I7T@ep-late-truth-ac5tgm3x-pooler.sa-east-1.aws.neon.tech/docreview?sslmode=require"
 JWT_SECRET="algum_segredo_forte"
-OPENAI_API_KEY="sk-proj-..." # substitua pela sua chave da OpenAI
+OPENAI_API_KEY="sk-proj-..." # chave disponível no Drive enviado ou substitua pela sua chave da OpenAI
 FRONTEND_ORIGIN="http://localhost:5173" # ou a porta do seu front-end
 ```
 
