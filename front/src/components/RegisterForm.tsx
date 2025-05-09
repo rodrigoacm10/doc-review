@@ -7,7 +7,7 @@ import { useMutation } from '@tanstack/react-query'
 import { loginRequest } from '@/services/auth'
 import { useRouter } from 'next/navigation'
 
-export function LoginForm() {
+export function RegisterForm() {
   const router = useRouter()
 
   const {

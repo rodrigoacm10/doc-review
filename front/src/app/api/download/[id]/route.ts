@@ -6,7 +6,7 @@ export async function GET(
   { params }: { params: { id: string } },
 ) {
   try {
-    return await getDownloadIdDocuments(params.id)
+    return await getDownloadIdDocuments(params.id, false)
   } catch (error) {
     console.error('Erro ao baixar o documento:', error)
     return new NextResponse('Erro no download', { status: 500 })

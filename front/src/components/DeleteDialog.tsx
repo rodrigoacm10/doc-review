@@ -33,9 +33,10 @@ export const DeleteDialog = ({
             e.stopPropagation()
             setIsOpen(true)
           }}
-          className="h-[40px] w-[40px] rounded-lg flex items-center justify-center p-2 hover:bg-red-100 transition"
+          className="h-[40px] rounded-lg flex items-center justify-center p-2 border hover:bg-red-100 transition text-red-500 gap-2"
         >
-          <Trash className="h-5 w-5 text-red-500" />
+          <p>Excluir</p>
+          <Trash className="h-5 w-5  " />
         </div>
       </DialogTrigger>
       <DialogContent

@@ -1,5 +1,5 @@
-export const downloadDoc = async (id: string) => {
-  const res = await fetch(`/api/download/${id}`)
+export const downloadDoc = async (id: string, full: boolean) => {
+  const res = await fetch(`/api/download/${id}${full ? '/full' : ''}`)
 
   if (!res.ok) {
     throw new Error('Erro ao baixar o documento')

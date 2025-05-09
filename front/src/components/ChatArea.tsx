@@ -1,27 +1,19 @@
 'use client'
 
 import { useForm } from 'react-hook-form'
-import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
 import {
   getDocumentsConversation,
   postDocumentsConversation,
 } from '@/services/conversations'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import { useEffect } from 'react'
+import { useRef } from 'react'
+import { messageSchema, MessageSchemaType } from '@/schemas/messageSchema'
+import { Loader2 } from 'lucide-react'
 
-const messageSchema = z.object({
-  question: z.string().min(1, 'Digite uma pergunta'),
-})
-
-type MessageSchema = z.infer<typeof messageSchema>
-
-interface ChatAreaProps {
-  documentId: string
-}
-
-export function ChatArea({ documentId }: ChatAreaProps) {
+export function ChatArea({ documentId }: { documentId: string }) {
   const queryClient = useQueryClient()
+  const textareaRef = useRef<HTMLTextAreaElement | null>(null)
 
   const {
     data: conversations,
@@ -33,7 +25,7 @@ export function ChatArea({ documentId }: ChatAreaProps) {
   })
 
   const { mutate: sendMessage, isPending } = useMutation({
-    mutationFn: (data: MessageSchema) =>
+    mutationFn: (data: MessageSchemaType) =>
       postDocumentsConversation(documentId, data),
     onSuccess: () => {
       queryClient.invalidateQueries({
@@ -47,51 +39,85 @@ export function ChatArea({ documentId }: ChatAreaProps) {
     register,
     handleSubmit,
     reset,
+    setValue,
     formState: { errors },
-  } = useForm<MessageSchema>({
+  } = useForm<MessageSchemaType>({
     resolver: zodResolver(messageSchema),
   })
 
-  const onSubmit = (data: MessageSchema) => {
+  const onSubmit = (data: MessageSchemaType) => {
     sendMessage(data)
   }
 
-  console.log('data ->>', conversations)
+  const handleAutoResize = () => {
+    const textarea = textareaRef.current
+    if (textarea) {
+      textarea.style.height = 'auto'
+      textarea.style.height = `${textarea.scrollHeight}px`
+    }
+  }
 
   return (
     <div className="max-w-2xl mx-auto mt-10 space-y-6">
-      <div className="space-y-4">
+      <div className="max-h-[400px] overflow-y-auto space-y-4 pr-2">
         {isLoading && <p>Carregando conversa...</p>}
         {isError && <p>Erro ao carregar a conversa.</p>}
 
         {conversations?.conversations.map((conv: any) => (
-          <div
-            key={conv.id}
-            className="p-4 border rounded-lg space-y-2 bg-white shadow"
-          >
-            <p className="font-medium text-gray-800">Você: {conv.question}</p>
-            <p className="text-gray-600">Assistente: {conv.answer}</p>
+          <div key={conv.id} className="flex flex-col gap-2">
+            <div className="flex flex-col items-end">
+              <p className="font-bold">Você:</p>
+              <p className="bg-[#d8c48e] text-black max-w-[90%] rounded-lg p-3">
+                {conv.question}
+              </p>
+            </div>
+            <div className="flex flex-col items-start">
+              <p className="font-bold">IA:</p>
+              <p className="bg-[#ececec] text-black max-w-[90%] rounded-lg p-3">
+                {conv.answer}
+              </p>
+            </div>
           </div>
         ))}
       </div>
 
-      <form onSubmit={handleSubmit(onSubmit)} className="space-y-2">
-        <textarea
-          {...register('question')}
-          placeholder="Digite sua pergunta..."
-          className="w-full p-2 border rounded resize-none h-24"
-        />
-        {errors.question && (
-          <p className="text-red-500 text-sm">{errors.question.message}</p>
-        )}
+      <form onSubmit={handleSubmit(onSubmit)} className="flex items-end gap-2">
+        <div className="flex-1 bg-gray-100 rounded-lg px-4 py-2">
+          <textarea
+            placeholder="Digite sua pergunta..."
+            className="w-full p-2 bg-transparent outline-none resize-none max-h-48 overflow-y-auto leading-tight"
+            {...register('question')}
+            name="question"
+            ref={(e) => {
+              register('question').ref(e)
+              textareaRef.current = e
+            }}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault()
+                handleSubmit(onSubmit)()
+              }
+            }}
+            onInput={handleAutoResize}
+          />
+        </div>
+
         <button
           type="submit"
           disabled={isPending}
-          className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition"
+          className="w-10 h-10 bg-[#d8c48e] text-white rounded-full flex items-center justify-center hover:bg-[#bdab7c] transition"
         >
-          {isPending ? 'Enviando...' : 'Enviar'}
+          {isPending ? (
+            <Loader2 className="animate-spin text-muted-foreground" size={16} />
+          ) : (
+            '➤'
+          )}
         </button>
       </form>
+
+      {errors.question && (
+        <p className="text-red-500 text-sm">{errors.question.message}</p>
+      )}
     </div>
   )
 }

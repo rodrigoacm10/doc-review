@@ -25,9 +25,9 @@ export const ImageDialog = ({
             e.stopPropagation()
             setIsOpen(true)
           }}
-          className="h-[40px] rounded-lg border flex items-center justify-center p-2"
+          className="cursor-pointer h-[40px] rounded-lg border flex items-center justify-center p-2 hover:bg-gray-100"
         >
-          <p>imagem</p>
+          <p>ver imagem</p>
         </div>
       </DialogTrigger>
       <DialogContent
