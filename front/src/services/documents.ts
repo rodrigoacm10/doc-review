@@ -1,7 +1,6 @@
 'use server'
 
 import { api } from '@/lib/api'
-import { LoginData } from '@/schemas/loginSchema'
 import { fileTypeFromBuffer } from 'file-type'
 import { cookies } from 'next/headers'
 import { NextResponse } from 'next/server'

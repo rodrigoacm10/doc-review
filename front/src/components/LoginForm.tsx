@@ -2,10 +2,12 @@
 
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { loginSchema, LoginData } from '@/schemas/loginSchema'
+import { loginSchema, LoginSchemaType } from '@/schemas/loginSchema'
 import { useMutation } from '@tanstack/react-query'
 import { loginRequest } from '@/services/auth'
 import { useRouter } from 'next/navigation'
+import { Button } from './ui/button'
+import { Loader2 } from 'lucide-react'
 
 export function LoginForm() {
   const router = useRouter()
@@ -15,15 +17,13 @@ export function LoginForm() {
     handleSubmit,
     setError,
     formState: { errors },
-  } = useForm<LoginData>({
+  } = useForm<LoginSchemaType>({
     resolver: zodResolver(loginSchema),
   })
 
   const { mutate, isPending } = useMutation({
     mutationFn: loginRequest,
     onSuccess: (data) => {
-      console.log('Login bem-sucedido', data)
-
       router.push('/documents')
     },
     onError: (error: any) => {
@@ -33,7 +33,7 @@ export function LoginForm() {
     },
   })
 
-  const onSubmit = (data: LoginData) => {
+  const onSubmit = (data: LoginSchemaType) => {
     mutate(data)
   }
 
@@ -62,13 +62,17 @@ export function LoginForm() {
         )}
       </div>
 
-      <button
+      <Button
         type="submit"
-        className="w-full bg-blue-600 text-white py-2 rounded"
+        className="w-full transition duration-200 bg-[#d8c48e] hover:bg-[#bdab7c] text-black py-2 rounded"
         disabled={isPending}
       >
-        {isPending ? 'Entrando...' : 'Entrar'}
-      </button>
+        {isPending ? (
+          <Loader2 className="animate-spin text-muted-foreground" size={20} />
+        ) : (
+          'Entrar'
+        )}
+      </Button>
     </form>
   )
 }
