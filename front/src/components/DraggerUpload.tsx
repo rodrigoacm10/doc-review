@@ -70,13 +70,13 @@ export function DraggerUpload({
       setPreviewUrl(null)
       onUploadSuccess()
 
-      toast('Fatura enviada com sucesso!', {
+      toast('Imagem enviada com sucesso!', {
         style: { color: 'green', fontWeight: 'bold' },
       })
     } catch (err) {
       setStatus('error')
 
-      toast('Erro ao enviar fatura.', {
+      toast('Erro ao enviar Imagem.', {
         style: { color: 'red', fontWeight: 'bold' },
       })
       console.error(err)
@@ -138,7 +138,7 @@ export function DraggerUpload({
           disabled={status === 'uploading'}
           className="w-full"
         >
-          {status === 'uploading' ? 'Enviando...' : 'Enviar Fatura'}
+          {status === 'uploading' ? 'Enviando...' : 'Enviar Imagem'}
         </Button>
       </form>
     </div>
