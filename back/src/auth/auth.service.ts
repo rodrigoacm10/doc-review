@@ -13,13 +13,14 @@ export class AuthService {
   async validateUser(email: string, password: string) {
     const user = await this.usersService.findByEmail(email);
     if (user && (await bcrypt.compare(password, user.password))) {
-      const { password, ...result } = user;
+      const { password: _password, ...result } = user; // eslint-disable-line @typescript-eslint/no-unused-vars
+
       return result;
     }
     throw new UnauthorizedException('Credenciais inválidas');
   }
 
-  async login(user: any) {
+  login(user: { id: string; email: string }) {
     const payload = { username: user.email, sub: user.id };
     return {
       access_token: this.jwtService.sign(payload),

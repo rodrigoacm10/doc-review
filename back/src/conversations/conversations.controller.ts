@@ -10,6 +10,14 @@ import {
 } from '@nestjs/common';
 import { ConversationsService } from './conversations.service';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
+import { Request as ExpressRequest } from 'express';
+
+interface AuthenticatedRequest extends ExpressRequest {
+  user: {
+    userId: string;
+    email: string;
+  };
+}
 
 @Controller('conversations')
 export class ConversationsController {
@@ -17,15 +25,19 @@ export class ConversationsController {
 
   @UseGuards(JwtAuthGuard)
   @Get(':documentId')
-  async getHistory(@Param('documentId') documentId: string, @Req() req) {
+  async getHistory(
+    @Param('documentId') documentId: string,
+    @Req() req: AuthenticatedRequest,
+  ) {
     const { userId } = req.user;
 
     const documentExists = await this.conversationsService.checkDocumentOwner(
       documentId,
       userId,
     );
-    if (!documentExists)
+    if (!documentExists) {
       throw new NotFoundException('Documento não encontrado');
+    }
 
     const conversations =
       await this.conversationsService.getDocumentConversations(documentId);
@@ -38,7 +50,7 @@ export class ConversationsController {
   async ask(
     @Param('documentId') documentId: string,
     @Body() body: { question: string },
-    @Req() req,
+    @Req() req: AuthenticatedRequest,
   ) {
     const { userId } = req.user;
     const { question } = body;
@@ -47,7 +59,9 @@ export class ConversationsController {
       documentId,
       userId,
     );
-    if (!document) throw new NotFoundException('Documento não encontrado');
+    if (!document) {
+      throw new NotFoundException('Documento não encontrado');
+    }
 
     const answer = await this.conversationsService.askAndSave(
       documentId,

@@ -16,10 +16,16 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import { DocumentsService } from './documents.service';
 import { v4 as uuid } from 'uuid';
-import { extname } from 'path';
+import { extname, join } from 'path';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
-import { Express, Response } from 'express';
-import { join } from 'path';
+import { Express, Response, Request as ExpressRequest } from 'express';
+
+interface AuthenticatedRequest extends ExpressRequest {
+  user: {
+    userId: string;
+    email: string;
+  };
+}
 
 @Controller('documents')
 export class DocumentsController {
@@ -38,7 +44,10 @@ export class DocumentsController {
       }),
     }),
   )
-  async upload(@UploadedFile() file: Express.Multer.File, @Req() req) {
+  async upload(
+    @UploadedFile() file: Express.Multer.File,
+    @Req() req: AuthenticatedRequest,
+  ) {
     const { userId } = req.user;
 
     return this.documentsService.processDocument({
@@ -51,7 +60,7 @@ export class DocumentsController {
 
   @UseGuards(JwtAuthGuard)
   @Get('my')
-  async listMyDocuments(@Req() req) {
+  async listMyDocuments(@Req() req: AuthenticatedRequest) {
     const { userId } = req.user;
 
     return this.documentsService.getUserDocuments(userId);
@@ -59,7 +68,11 @@ export class DocumentsController {
 
   @UseGuards(JwtAuthGuard)
   @Get('download/:id')
-  async download(@Param('id') id: string, @Res() res: Response, @Req() req) {
+  async download(
+    @Param('id') id: string,
+    @Res() res: Response,
+    @Req() req: AuthenticatedRequest,
+  ) {
     const { userId } = req.user;
 
     const document = await this.documentsService.getDocumentByIdAndUser(
@@ -79,7 +92,7 @@ export class DocumentsController {
   async downloadWithContent(
     @Param('id') id: string,
     @Res() res: Response,
-    @Req() req,
+    @Req() req: AuthenticatedRequest,
   ) {
     const { userId } = req.user;
     return this.documentsService.generateDocumentWithContent(id, userId, res);
@@ -87,7 +100,10 @@ export class DocumentsController {
 
   @UseGuards(JwtAuthGuard)
   @Delete(':id')
-  async deleteDocument(@Param('id') id: string, @Req() req) {
+  async deleteDocument(
+    @Param('id') id: string,
+    @Req() req: AuthenticatedRequest,
+  ) {
     const { userId } = req.user;
 
     const deleted = await this.documentsService.deleteDocument(id, userId);

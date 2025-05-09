@@ -1,6 +1,7 @@
 import { Controller, Post, Body, UseGuards, Request } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
+import { Request as ExpressRequest } from 'express';
 
 @Controller('auth')
 export class AuthController {
@@ -21,7 +22,10 @@ export class AuthController {
 
   @UseGuards(JwtAuthGuard)
   @Post('me')
-  async profile(@Request() req) {
+  profile(
+    @Request()
+    req: ExpressRequest & { user: { userId: string; email: string } },
+  ) {
     return req.user;
   }
 }

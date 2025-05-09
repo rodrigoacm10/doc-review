@@ -3,7 +3,6 @@ import { PrismaService } from '../prisma/prisma.service';
 import { LlmService } from './llm/llm.service';
 import { OcrService } from './ocr/ocr.service';
 import * as PDFDocument from 'pdfkit';
-import * as fs from 'fs';
 import * as fsp from 'fs/promises';
 import * as path from 'path';
 import { Response } from 'express';
@@ -104,7 +103,6 @@ export class DocumentsService {
     try {
       const imagePath = path.join(__dirname, '..', '..', document.imagePath);
       const imageBuffer = await fsp.readFile(imagePath);
-      const format = document.imagePath.endsWith('.png') ? 'PNG' : 'JPEG';
       doc.image(imageBuffer, {
         fit: [400, 400],
         align: 'center',
