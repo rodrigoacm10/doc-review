@@ -1,13 +1,5 @@
 import { useState } from 'react'
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogOverlay,
-  DialogTitle,
-  DialogTrigger,
-} from './ui/dialog'
+import { Dialog, DialogContent, DialogTitle, DialogTrigger } from './ui/dialog'
 
 export const ImageDialog = ({
   fileName,
@@ -36,6 +28,7 @@ export const ImageDialog = ({
       >
         <DialogTitle>{fileName}</DialogTitle>
         <div className="h-full w-full">
+          {/*  eslint-disable-next-line @next/next/no-img-element */}
           <img
             src={`${process.env.NEXT_PUBLIC_API_URL}${imageUrl}`}
             alt="Preview do documento"

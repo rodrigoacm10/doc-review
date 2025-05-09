@@ -8,6 +8,7 @@ import { loginRequest } from '@/services/auth'
 import { useRouter } from 'next/navigation'
 import { Button } from './ui/button'
 import { Loader2 } from 'lucide-react'
+import { AxiosError } from 'axios'
 
 export function LoginForm() {
   const router = useRouter()
@@ -23,10 +24,10 @@ export function LoginForm() {
 
   const { mutate, isPending } = useMutation({
     mutationFn: loginRequest,
-    onSuccess: (data) => {
+    onSuccess: () => {
       router.push('/documents')
     },
-    onError: (error: any) => {
+    onError: (error: AxiosError<{ message: string }>) => {
       if (error.response?.data?.message) {
         setError('email', { message: error.response.data.message })
       }

@@ -24,6 +24,8 @@ export function ChatArea({ documentId }: { documentId: string }) {
     queryFn: () => getDocumentsConversation(documentId),
   })
 
+  console.log('concversation', conversations)
+
   const { mutate: sendMessage, isPending } = useMutation({
     mutationFn: (data: MessageSchemaType) =>
       postDocumentsConversation(documentId, data),
@@ -39,7 +41,6 @@ export function ChatArea({ documentId }: { documentId: string }) {
     register,
     handleSubmit,
     reset,
-    setValue,
     formState: { errors },
   } = useForm<MessageSchemaType>({
     resolver: zodResolver(messageSchema),
@@ -63,7 +64,7 @@ export function ChatArea({ documentId }: { documentId: string }) {
         {isLoading && <p>Carregando conversa...</p>}
         {isError && <p>Erro ao carregar a conversa.</p>}
 
-        {conversations?.conversations.map((conv: any) => (
+        {conversations?.conversations.map((conv) => (
           <div key={conv.id} className="flex flex-col gap-2">
             <div className="flex flex-col items-end">
               <p className="font-bold">Você:</p>

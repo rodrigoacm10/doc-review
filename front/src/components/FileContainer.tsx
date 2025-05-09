@@ -14,6 +14,7 @@ export const FileContainer = ({
   return (
     <div className="bg-white rounded-xl grid grid-cols-[60px_1fr] p-2 relative gap-2 shadow-[0_0_20px_0_rgba(0,0,0,0.1)]">
       <div className="flex justify-center items-center h-[60px] w-[60px]">
+        {/*  eslint-disable-next-line @next/next/no-img-element */}
         <img
           src={previewUrl}
           alt="Preview do documento"

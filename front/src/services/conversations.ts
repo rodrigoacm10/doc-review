@@ -3,7 +3,17 @@
 import { api } from '@/lib/api'
 import { cookies } from 'next/headers'
 
-export async function getDocumentsConversation(documentId: string) {
+type ConversationType = {
+  answer: string
+  createdAt: string
+  documentId: string
+  id: string
+  question: string
+}
+
+export async function getDocumentsConversation(
+  documentId: string,
+): Promise<{ conversations: ConversationType[] }> {
   const token = (await cookies()).get('token')
 
   if (!token?.value) {
@@ -29,15 +39,12 @@ export async function postDocumentsConversation(
     throw new Error('Token não encontrado')
   }
 
-  console.log('enviado ->', data)
   const response = await api.post(`/conversations/${documentId}/ask`, data, {
     headers: {
       Authorization: `Bearer ${token?.value}`,
     },
     withCredentials: true,
   })
-
-  console.log('REsponse ->', response)
 
   return response.data
 }

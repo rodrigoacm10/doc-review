@@ -8,6 +8,7 @@ import { loginRequest, registerRequest } from '@/services/auth'
 import { useRouter } from 'next/navigation'
 import { Button } from './ui/button'
 import { Loader2 } from 'lucide-react'
+import { AxiosError } from 'axios'
 
 export function RegisterForm() {
   const router = useRouter()
@@ -16,6 +17,7 @@ export function RegisterForm() {
     register,
     handleSubmit,
     setError,
+    getValues,
     formState: { errors },
   } = useForm<RegisterShemaType>({
     resolver: zodResolver(registerSchema),
@@ -23,12 +25,14 @@ export function RegisterForm() {
 
   const { mutate, isPending } = useMutation({
     mutationFn: registerRequest,
-    onSuccess: (data) => {
-      console.log('data ->', data)
-      // await loginRequest()
-      // router.push('/documents')
+    onSuccess: async () => {
+      await loginRequest({
+        email: getValues('email'),
+        password: getValues('password'),
+      })
+      router.push('/documents')
     },
-    onError: (error: any) => {
+    onError: (error: AxiosError<{ message: string }>) => {
       if (error.response?.data?.message) {
         setError('email', { message: error.response.data.message })
       }

@@ -4,7 +4,6 @@ import {
   DialogContent,
   DialogDescription,
   DialogHeader,
-  DialogOverlay,
   DialogTitle,
   DialogTrigger,
 } from './ui/dialog'
@@ -66,6 +65,7 @@ export const DeleteDialog = ({
                 toast('Erro ao excluir documento.', {
                   style: { color: 'red', fontWeight: 'bold' },
                 })
+                console.error(err)
               }
             }}
             variant="destructive"

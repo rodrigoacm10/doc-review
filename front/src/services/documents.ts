@@ -83,7 +83,7 @@ export const getDownloadIdDocuments = async (id: string, full: boolean) => {
   })
 }
 
-export async function postDocuments(data: any) {
+export async function postDocuments(data: FormData) {
   const token = (await cookies()).get('token')
 
   if (!token?.value) {

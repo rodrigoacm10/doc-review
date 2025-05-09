@@ -55,6 +55,7 @@ export const FilesList = () => {
                   />
 
                   <div className="hidden sm:flex justify-center items-center h-[60px] w-[60px]">
+                    {/*  eslint-disable-next-line @next/next/no-img-element */}
                     <img
                       src={`${process.env.NEXT_PUBLIC_API_URL}${file.imageUrl}`}
                       alt="Preview do documento"
@@ -80,6 +81,7 @@ export const FilesList = () => {
                             toast('Erro ao baixar documento', {
                               style: { color: 'red', fontWeight: 'bold' },
                             })
+                            console.error(err)
                           }
                         }}
                       >
@@ -100,6 +102,7 @@ export const FilesList = () => {
                             toast('Erro ao baixar documento', {
                               style: { color: 'red', fontWeight: 'bold' },
                             })
+                            console.error(err)
                           }
                         }}
                       >

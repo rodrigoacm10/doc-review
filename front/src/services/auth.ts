@@ -6,6 +6,8 @@ import { RegisterShemaType } from '@/schemas/registerSchema'
 import { cookies } from 'next/headers'
 import { redirect } from 'next/navigation'
 
+type UserType = { email: string; id: string; name: string; password: string }
+
 export async function loginRequest(data: LoginSchemaType) {
   const response = await api.post('/auth/login', data, {
     withCredentials: true,
@@ -22,7 +24,9 @@ export async function logout() {
   redirect('/')
 }
 
-export async function registerRequest(data: RegisterShemaType) {
+export async function registerRequest(
+  data: RegisterShemaType,
+): Promise<UserType> {
   const response = await api.post('/auth/register', data, {
     withCredentials: true,
   })

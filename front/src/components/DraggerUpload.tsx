@@ -79,6 +79,7 @@ export function DraggerUpload({
       toast('Erro ao enviar fatura.', {
         style: { color: 'red', fontWeight: 'bold' },
       })
+      console.error(err)
     }
   }
 
