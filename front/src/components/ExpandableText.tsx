@@ -4,10 +4,12 @@ export const ExpandableText = ({ text }: { text: string }) => {
   const paragraphs = text.split('\n').filter((p) => p.trim() !== '')
   const [expanded, setExpanded] = useState(false)
   const contentRef = useRef<HTMLDivElement>(null)
-  const [height, setHeight] = useState<string>('')
+  const [height, setHeight] = useState<string | 'auto'>('auto')
+
+  const isExpandable = paragraphs.length > 5
 
   useEffect(() => {
-    if (contentRef.current) {
+    if (contentRef.current && isExpandable) {
       if (expanded) {
         setHeight(`${contentRef.current.scrollHeight}px`)
       } else {
@@ -18,8 +20,10 @@ export const ExpandableText = ({ text }: { text: string }) => {
         )
         setHeight(`${totalHeight}px`)
       }
+    } else {
+      setHeight('auto')
     }
-  }, [expanded, paragraphs])
+  }, [expanded, paragraphs, isExpandable])
 
   return (
     <div>
@@ -27,8 +31,8 @@ export const ExpandableText = ({ text }: { text: string }) => {
         ref={contentRef}
         style={{
           maxHeight: height,
-          overflow: 'hidden',
-          transition: 'max-height 0.4s ease',
+          overflow: isExpandable ? 'hidden' : 'visible',
+          transition: isExpandable ? 'max-height 0.4s ease' : undefined,
         }}
         className="flex flex-col gap-3"
       >
@@ -37,7 +41,7 @@ export const ExpandableText = ({ text }: { text: string }) => {
         ))}
       </div>
 
-      {paragraphs.length > 5 && (
+      {isExpandable && (
         <button
           className="cursor-pointer mt-2 text-blue-500 text-sm underline"
           onClick={() => setExpanded((prev) => !prev)}
